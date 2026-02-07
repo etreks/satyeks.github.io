@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satyeks - Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fira+Code:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #fafaf8;
+            --text-primary: #1a1a1a;
+            --text-secondary: #6b6b6b;
+            --accent: #d14d28;
+            --border: #e0e0dc;
+            --folder-bg: #f5f5f2;
+            --folder-border: #d4d4cf;
+        }
+
+        body {
+            font-family: 'Fira Code', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 14px;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-primary);
+            font-size: 20px;
+        }
+
+        .tagline {
+            font-family: 'EB Garamond', serif;
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        nav a {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+        }
+
+        nav a.active {
+            color: var(--text-primary);
+        }
+
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--text-primary);
+        }
+
+        /* Archive Grid */
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        /* Folder Card */
+        .folder-card {
+            background: var(--folder-bg);
+            border: 1px solid var(--folder-border);
+            border-radius: 3px;
+            padding: 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .folder-card:hover {
+            border-color: var(--text-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .folder-tab {
+            background: var(--folder-bg);
+            border: 1px solid var(--folder-border);
+            border-bottom: none;
+            border-radius: 3px 3px 0 0;
+            width: 100px;
+            height: 30px;
+            position: relative;
+            top: 0;
+            left: 20px;
+            margin-bottom: -1px;
+            display: flex;
+            align-items: center;
+            padding-left: 12px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .folder-content {
+            padding: 24px;
+            background: var(--folder-bg);
+            border-radius: 0 3px 3px 3px;
+        }
+
+        .folder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .folder-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .folder-subtitle {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .folder-meta {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        .folder-description {
+            font-family: 'EB Garamond', serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Storytelling Sections */
+        .story-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .folder-card:hover .story-sections {
+            opacity: 1;
+            max-height: 800px;
+        }
+
+        .story-item {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            border-left: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .story-item:hover {
+            border-left-color: var(--accent);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .story-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .story-text {
+            font-family: 'EB Garamond', serif;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        /* Tags */
+        .folder-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .tag {
+            font-size: 10px;
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .folder-card {
+            animation: fadeInUp 0.6s ease backwards;
+        }
+
+        .folder-card:nth-child(1) { animation-delay: 0.1s; }
+        .folder-card:nth-child(2) { animation-delay: 0.2s; }
+        .folder-card:nth-child(3) { animation-delay: 0.3s; }
+        .folder-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .archive-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            nav {
+                gap: 20px;
+            }
+        }
+
+        /* Connection indicator */
+        .connect-btn {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .connect-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <div class="logo">
+                    <div class="logo-icon">🐱</div>
+                    <span>Satyeks</span>
+                </div>
+                <div class="tagline">Alchemist × Product Designer</div>
+            </div>
+            <a href="#connect" class="connect-btn">Connect ↗</a>
+        </header>
+
+        <nav>
+            <a href="#story">Our story</a>
+            <a href="#updates">Updates</a>
+            <a href="#archive" class="active">Archive</a>
+        </nav>
+
+        <div class="archive-grid">
+            <!-- PETUWA Project -->
+            <div class="folder-card">
+                <div class="folder-tab">2024</div>
+                <div class="folder-content">
+                    <div class="folder-header">
+                        <div>
+                            <div class="folder-title">PETUWA</div>
+                            <div class="folder-subtitle">Product Design • IoT</div>
+                        </div>
+                        <div class="folder-meta">
+                            Q3 2024<br>
+                            12 weeks
+                        </div>
+                    </div>
+
+                    <div class="folder-description">
+                        Share location of my lost cat 'Ponya' via scanning QR on its belt
+                    </div>
+
+                    <div class="story-sections">
+                        <div class="story-item">
+                            <div class="story-label">Spark</div>
+                            <div class="story-text">
+                                The heartbreak of losing Ponya—our cat disappeared for 3 days. Traditional methods failed. I needed a simple way for anyone who found her to contact us immediately.
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Vision</div>
+                            <div class="story-text">
+                                A QR-enabled pet collar that transforms strangers into instant rescue partners. Scan the code, see the pet's profile, contact the owner—all in seconds, no app required.
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Movement</div>
+                            <div class="story-text">
+                                Designed waterproof QR tags with real-time location tracking. Created a landing page that loads instantly on any phone. Tested with 15 pet owners in the neighborhood.
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Artifact</div>
+                            <div class="story-text">
+                                Physical: Durable, lightweight collar tags with high-contrast QR codes. Digital: Mobile-optimized profile pages with instant notifications and GPS integration.
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Reflection</div>
+                            <div class="story-text">
+                                Technology solves emotional problems best when it disappears. The QR code became invisible until needed—that's when it became invaluable. 4 reunions in the first month.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="folder-tags">
+                        <span class="tag">QR Technology</span>
+                        <span class="tag">IoT</span>
+                        <span class="tag">Emergency Design</span>
+                        <span class="tag">Pet Tech</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NoIcE Project -->
+            <div class="folder-card">
+                <div class="folder-tab">2024</div>
+                <div class="folder-content">
+                    <div class="folder-header">
+                        <div>
+                            <div class="folder-title">NoIcE</div>
+                            <div class="folder-subtitle">Web3 • Financial Platform</div>
+                        </div>
+                        <div class="folder-meta">
+                            Q4 2024<br>
+                            $4.8M
+                        </div>
+                    </div>
+
+                    <div class="folder-description">
+                        IPO from your desk—democratizing access to presales and ICOs for mature companies
+                    </div>
+
+                    <div class="story-sections">
+                        <div class="story-item">
+                            <div class="story-label">Spark</div>
+                            <div class="story-text">
+                                Capital raising is broken. Traditional IPOs cost millions and take years. Small investors get shut out of the best opportunities. What if we could flip the entire model?
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Vision</div>
+                            <div class="story-text">
+                                A decentralized platform where companies launch directly to global investors. No middlemen, no gatekeepers—just transparent access to presales, fair launches, and secondary markets.
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Movement</div>
+                            <div class="story-text">
+                                Built documentation for 4 launch mechanisms. Designed the UX to handle complex tokenomics while feeling dead simple. Created investor education flows that built confidence.
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Artifact</div>
+                            <div class="story-text">
+                                A comprehensive docs site explaining presales, fair launches, and secondary markets. Clear, minimal interface that makes Web3 finance accessible to traditional investors.
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Reflection</div>
+                            <div class="story-text">
+                                Complexity is the enemy of adoption. We had to translate blockchain jargon into concepts people already understood from traditional finance. Education became the product.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="folder-tags">
+                        <span class="tag">Web3</span>
+                        <span class="tag">FinTech</span>
+                        <span class="tag">Documentation</span>
+                        <span class="tag">Tokenomics</span>
+                        <span class="tag">DeFi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Your Own Projects Template -->
+            <div class="folder-card">
+                <div class="folder-tab">YYYY</div>
+                <div class="folder-content">
+                    <div class="folder-header">
+                        <div>
+                            <div class="folder-title">Project Name</div>
+                            <div class="folder-subtitle">Category • Type</div>
+                        </div>
+                        <div class="folder-meta">
+                            Quarter<br>
+                            Duration
+                        </div>
+                    </div>
+
+                    <div class="folder-description">
+                        Your project description goes here—make it compelling and concise
+                    </div>
+
+                    <div class="story-sections">
+                        <div class="story-item">
+                            <div class="story-label">Spark</div>
+                            <div class="story-text">
+                                What ignited this project? What problem did you notice? What moment made you say "there has to be a better way"?
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Vision</div>
+                            <div class="story-text">
+                                What did you imagine? What was the bold idea that would solve this problem? Paint the picture of the ideal solution.
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Movement</div>
+                            <div class="story-text">
+                                How did you bring it to life? What actions did you take? What was the process of turning vision into reality?
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Artifact</div>
+                            <div class="story-text">
+                                What did you create? What are the tangible outcomes? What can people see, touch, use, or experience?
+                            </div>
+                        </div>
+
+                        <div class="story-item">
+                            <div class="story-label">Reflection</div>
+                            <div class="story-text">
+                                What did you learn? What surprised you? What would you do differently? What insight will you carry forward?
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="folder-tags">
+                        <span class="tag">Tag 1</span>
+                        <span class="tag">Tag 2</span>
+                        <span class="tag">Tag 3</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>© 2026 Satyeks — Alchemist × Product Designer</p>
+            <p style="margin-top: 8px; opacity: 0.6;">Transforming ideas into experiences</p>
+        </footer>
+    </div>
+</body>
+</html>
